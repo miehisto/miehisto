@@ -14,11 +14,17 @@ end
 
 desc "compile binary"
 task :compile => :mruby do
+  if `uname` =~ /Darwin/
+    raise "This binary cannot be built on Mac!!"
+  end
   sh "cd mruby && rake all MRUBY_CONFIG=#{MRUBY_CONFIG}"
 end
 
 desc "test"
 task :test => :mruby do
+  if `uname` =~ /Darwin/
+    raise "This binary cannot be built on Mac!!"
+  end
   sh "cd mruby && rake all test MRUBY_CONFIG=#{MRUBY_CONFIG}"
 end
 
