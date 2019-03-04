@@ -14,7 +14,7 @@ def __main__(argv)
     Grenadine::Container.dump(argv[1..-1])
   when "list", "ls"
     Grenadine::Container.list(argv[1..-1])
-  when "version"
+  when "version", "-V", "--version"
     puts "grenadine: v#{Grenadine::VERSION}"
   when "restore"
     Grenadine::Container.restore(argv[1..-1])
