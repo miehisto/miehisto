@@ -7,5 +7,7 @@ def __main__(argv)
   case argv[0]
   when "start"
     Grenadine::Container.run(argv[1..-1])
+  else
+    raise "Invalid subcommand: #{argv[0]}"
   end
 end

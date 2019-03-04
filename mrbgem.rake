@@ -21,7 +21,7 @@ MRuby::Gem::Specification.new('grenadine') do |spec|
   spec.add_dependency 'mruby-process'
   spec.add_dependency 'mruby-env'
   spec.add_dependency 'mruby-linux-namespace'
-  spec.add_dependency 'mruby-onig-regexp'
+  # spec.add_dependency 'mruby-onig-regexp'
   spec.add_github_dep 'haconiwa/mruby-exec'
   spec.add_github_dep 'haconiwa/mruby-mount'
   spec.add_github_dep 'udzura/mruby-fibered_worker'
