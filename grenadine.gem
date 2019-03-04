@@ -1,0 +1,7 @@
+name: grenadine
+description: Grenadine class
+author: Uchio Kondo
+website: https://github.com/udzura/grenadine
+protocol: git
+repository: https://github.com/udzura/grenadine.git
+license: MIT
