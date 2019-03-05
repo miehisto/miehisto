@@ -138,12 +138,25 @@ static mrb_value mrb_gren_get_ctime(mrb_state *mrb, mrb_value self)
   return mrb_fixnum_value((mrb_int)s.st_ctim.tv_sec);
 }
 
-static mrb_value mrb_gren_get_image_size(mrb_state *mrb, mrb_value self)
+static mrb_value mrb_gren_get_page_size(mrb_state *mrb, mrb_value self)
 {
-  char *images_dir;
-  mrb_get_args(mrb, "z", &images_dir);
+  mrb_value *page_files;
+  mrb_int count;
+  int i;
+  off_t page_size = 0;
+  mrb_get_args(mrb, "a", &page_files, &count);
 
-  return mrb_true_value();
+  for(i = 0; i < count; i++) {
+    struct stat s;
+    if(stat(RSTRING_PTR(page_files[i]), &s) < 0) {
+      mrb_sys_fail(mrb, "stat failed");
+    }
+    if(S_ISREG(s.st_mode)) {
+      page_size += s.st_size;
+    }
+  }
+
+  return mrb_fixnum_value((mrb_int)page_size);
 }
 
 void mrb_grenadine_gem_init(mrb_state *mrb)
@@ -152,6 +165,7 @@ void mrb_grenadine_gem_init(mrb_state *mrb)
   util = mrb_define_module(mrb, "GrenadineUtil");
   mrb_define_class_method(mrb, util, "pivot_root_to", mrb_pivot_root_to, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, util, "get_ctime", mrb_gren_get_ctime, MRB_ARGS_REQ(1));
+  mrb_define_class_method(mrb, util, "get_page_size", mrb_gren_get_page_size, MRB_ARGS_REQ(1));
 
   DONE;
 }

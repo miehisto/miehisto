@@ -39,11 +39,25 @@ module Grenadine
       end
     end
 
-    def to_fmt_arg
-      [process_id, ctime, comm[0..9]]
+    def page_size
+      files = `find #{images_dir_path}/pages*.img -type f`.lines.map{|l| l.chomp}
+      raw = GrenadineUtil.get_page_size(files)
+      if raw >= 1024 * 1024 * 1024
+        "%.2fGiB" % (raw.to_f / (1024 * 1024 * 1024))
+      elsif raw >= 1024 * 1024
+        "%.2fMiB" % (raw.to_f / (1024 * 1024))
+      elsif raw >= 1024
+        "%.2fKiB" % (raw.to_f / 1024)
+      else
+        raw
+      end
     end
 
-    FORMAT = "%-32s\t%-25s\t%-10s"
+    def to_fmt_arg
+      [process_id, ctime, comm[0..9], page_size]
+    end
+
+    FORMAT = "%-32s\t%-25s\t%-10s\t%-8s"
 
     def self.list(_)
       images = []
@@ -51,7 +65,7 @@ module Grenadine
         process_id = File.basename(path.chomp)
         images << Image.new(process_id)
       end
-      puts FORMAT % %w(IMAGE_ID CTIME COMM)
+      puts FORMAT % %w(IMAGE_ID CTIME COMM MEM_SIZE)
       images.select{|i| i.valid? }.sort_by{|i| i.ctime }.reverse.each do |img|
         puts FORMAT % img.to_fmt_arg
       end
