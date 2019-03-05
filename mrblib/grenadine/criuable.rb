@@ -1,8 +1,50 @@
 module Grenadine
+  class RestoreCMD
+    def initialize(bin_path)
+      @bin_path = bin_path
+      @root = "/"
+      @options = []
+      @externals = []
+      @run_exec_cmd = true
+      @exec_cmd = nil
+    end
+    attr_accessor :options, :externals, :exec_cmd, :root
+
+    def to_execve_arg
+      [
+        @bin_path,
+        "restore"
+      ] + rest_arguments
+    end
+    alias inspect to_execve_arg
+
+    def rest_arguments
+      a = ["--root", self.root]
+      a.concat @options.dup
+      @externals.each do |opt|
+        a.concat(["--external", opt])
+      end
+      if @exec_cmd
+        a.concat(["--exec-cmd", "--"])
+        a.concat(@exec_cmd.dup)
+      end
+      a
+    end
+  end
+
   # Luckily, C is prior to Dump or Restore
   module CRIUAble
+    def bin_path
+      b = ENV['CRIU_BIN_PATH'] || `which criu`.chomp
+      b.empty? ? "/usr/local/sbin/criu" : b
+    end
+
     def images_dir
       "/var/lib/grenadine/images/#{process_id}"
+    end
+
+    def run_root
+      "/var/run/grenadine/restored/#{process_id}"
     end
 
     def service_address
@@ -33,6 +75,29 @@ module Grenadine
       external_mount_points.each do |mp|
         c.add_external "mnt[#{mp[0]}]:#{mp[1]}"
       end
+      return c
+    end
+
+    def make_criu_command_obj
+      # Force resetting PATH for super-clean environment
+      if !ENV['PATH'] || ENV['PATH'] == ""
+        ENV['PATH'] = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      end
+
+      c = RestoreCMD.new(bin_path)
+      c.options << "--shell-job"
+      c.options.concat ["--log-file", log_file]
+      c.options.concat ["-D", images_dir]
+      c.options << "--tcp-established"
+
+      c.externals << "mnt[]:"
+      external_mount_points.each do |mp|
+        c.externals << "mnt[#{mp[1]}]:#{mp[0]}"
+      end
+
+      c.root = run_root
+      # TODO: setting exec_cmd
+      # TODO: cleanup run_root on container finished - this is exec_cmd's due
       return c
     end
   end

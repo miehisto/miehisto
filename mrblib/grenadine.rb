@@ -17,7 +17,7 @@ def __main__(argv)
   when "version", "-V", "--version"
     puts "grenadine: v#{Grenadine::VERSION}"
   when "restore"
-    Grenadine::Container.restore(argv[1..-1])
+    Grenadine::Restorer.new(argv[1..-1]).restore
   when "help"
     puts "...help"
   else
