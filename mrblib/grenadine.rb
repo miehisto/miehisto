@@ -13,7 +13,7 @@ def __main__(argv)
   when "dump"
     Grenadine::Dumper.new(argv[1..-1]).dump
   when "list", "ls"
-    Grenadine::Container.list(argv[1..-1])
+    Grenadine::Image.list(argv[1..-1])
   when "version", "-V", "--version"
     puts "grenadine: v#{Grenadine::VERSION}"
   when "restore"

@@ -18,6 +18,7 @@ MRuby::Gem::Specification.new('grenadine') do |spec|
   spec.add_core_dep 'mruby-sprintf'
   spec.add_core_dep 'mruby-print'
 
+  spec.add_dependency 'mruby-dir'
   spec.add_dependency 'mruby-process'
   spec.add_dependency 'mruby-env'
   spec.add_dependency 'mruby-linux-namespace'

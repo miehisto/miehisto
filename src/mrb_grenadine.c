@@ -17,6 +17,7 @@
 #include <syslog.h>
 #include <string.h>
 #include <errno.h>
+#include <time.h>
 
 #include <mruby.h>
 #include <mruby/string.h>
@@ -124,11 +125,33 @@ static mrb_value mrb_pivot_root_to(mrb_state *mrb, mrb_value self)
   return mrb_true_value();
 }
 
+static mrb_value mrb_gren_get_ctime(mrb_state *mrb, mrb_value self)
+{
+  mrb_int fd;
+  struct stat s;
+  mrb_get_args(mrb, "i", &fd);
+
+  if(fstat((int)fd, &s) < 0) {
+    mrb_sys_fail(mrb, "fstat failed");
+  }
+
+  return mrb_fixnum_value((mrb_int)s.st_ctim.tv_sec);
+}
+
+static mrb_value mrb_gren_get_image_size(mrb_state *mrb, mrb_value self)
+{
+  char *images_dir;
+  mrb_get_args(mrb, "z", &images_dir);
+
+  return mrb_true_value();
+}
+
 void mrb_grenadine_gem_init(mrb_state *mrb)
 {
-  struct RClass *gren;
-  gren = mrb_define_module(mrb, "Grenadine");
-  mrb_define_class_method(mrb, gren, "pivot_root_to", mrb_pivot_root_to, MRB_ARGS_REQ(1));
+  struct RClass *util;
+  util = mrb_define_module(mrb, "GrenadineUtil");
+  mrb_define_class_method(mrb, util, "pivot_root_to", mrb_pivot_root_to, MRB_ARGS_REQ(1));
+  mrb_define_class_method(mrb, util, "get_ctime", mrb_gren_get_ctime, MRB_ARGS_REQ(1));
 
   DONE;
 }

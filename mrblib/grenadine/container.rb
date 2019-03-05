@@ -16,7 +16,7 @@ module Grenadine
       pid = Namespace.clone(Namespace::CLONE_NEWNS|Namespace::CLONE_NEWPID) do
         begin
           this.make_isolated_root(newroot)
-          Grenadine.pivot_root_to(newroot)
+          GrenadineUtil.pivot_root_to(newroot)
           Mount.mount "proc", "/proc", type: "proc"
           Procutil.setsid
           Procutil.daemon_fd_reopen # again, TODO: make optional
