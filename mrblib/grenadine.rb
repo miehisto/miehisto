@@ -11,7 +11,7 @@ def __main__(argv)
     Grenadine::Container.spawn(argv[1..-1])
   # Implement below!
   when "dump"
-    Grenadine::Container.dump(argv[1..-1])
+    Grenadine::Dumper.new(argv[1..-1]).dump
   when "list", "ls"
     Grenadine::Container.list(argv[1..-1])
   when "version", "-V", "--version"
