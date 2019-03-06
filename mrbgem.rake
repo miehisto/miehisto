@@ -34,6 +34,9 @@ MRuby::Gem::Specification.new('grenadine') do |spec|
   spec.add_github_dep 'matsumotory/mruby-criu'
 
   spec.add_test_dependency 'mruby-bin-mruby' , :core => 'mruby-bin-mruby'
+  unless ENV['PRODUCTION_BUILD']
+    spec.add_test_dependency 'mruby-bin-mirb' , :core => 'mruby-bin-mirb'
+  end
 
   spec.build.cc.defines << %(MRB_CRIU_USE_STATIC)
 end
