@@ -18,13 +18,13 @@ module Grenadine
           case optname
           when '-u'
             if (ug = optarg.split(':')).size == 2
-              @uid = ug[0].to_i
-              @gid = ug[1].to_i
+              @uid = wrap_uid(ug[0])
+              @gid = wrap_gid(ug[1])
             else
-              @uid = optarg.to_i
+              @uid = wrap_uid(optarg)
             end
           when '-g'
-            @gid = optarg.to_i
+            @gid = wrap_gid(optarg)
           when '-C'
             @workdir = optarg
           when '-e'
@@ -54,6 +54,8 @@ module Grenadine
           Procutil.setsid
           # TODO set uid/gid here
           Dir.chdir this.workdir
+          Process::Sys.setuid(this.uid) if this.uid > 0
+          Process::Sys.setgid(this.gid) if this.gid > 0
 
           Procutil.daemon_fd_reopen # again, TODO: make optional
           Exec.execve ENV.to_hash.merge(this.envvars), *this.argv
@@ -79,6 +81,7 @@ module Grenadine
       puts "Spawned: #{pid}"
     end
 
+    private
     def make_isolated_root(newroot)
       Mount.make_rprivate "/"
       Mount.bind_mount "/", newroot
@@ -98,6 +101,22 @@ module Grenadine
 
     def self.spawn(argv)
       new(argv).spawn
+    end
+
+    def wrap_uid(rawstr)
+      if rawstr.is_a?(String) and rawstr !~ /^\d+$/
+        ::Process::UID.from_name rawstr
+      else
+        rawstr.to_i
+      end
+    end
+
+    def wrap_gid(rawstr)
+      if rawstr.is_a?(String) and rawstr !~ /^\d+$/
+        ::Process::GID.from_name rawstr
+      else
+        rawstr.to_i
+      end
     end
   end
 end
