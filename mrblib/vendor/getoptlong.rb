@@ -201,13 +201,13 @@ class GetoptLong
     #
     # Unparsed and remaining ARGV values
     #
-    @argv_unparsed = nil
+    @unparsed_argv = nil
 
     if 0 < arguments.length
       set_options(*arguments)
     end
   end
-  attr_accessor :ARGV, :argv_unparsed
+  attr_accessor :ARGV, :unparsed_argv
 
   #
   # Set the handling of the ordering of options and arguments.
@@ -493,7 +493,7 @@ class GetoptLong
     # `--' indicates the end of the option list.
     #
     if argument == '--' && @rest_singles.length == 0
-      @argv_unparsed = self.ARGV
+      @unparsed_argv = self.ARGV
       terminate
       return nil
     end
