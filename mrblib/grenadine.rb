@@ -11,7 +11,6 @@ def __main__(argv)
     Grenadine::Container.run(argv[1..-1])
   when "daemon"
     Grenadine::Container.spawn(argv[1..-1])
-  # Implement below!
   when "dump"
     Grenadine::Dumper.new(argv[1..-1]).dump
   when "list", "ls"
@@ -24,6 +23,10 @@ def __main__(argv)
     else
       Grenadine::Restorer.new(argv[1..-1]).restore
     end
+  when "status"
+    Grenadine::Status.new(argv[1..-1]).kill
+  when "kill"
+    Grenadine::Kill.new(argv[1..-1]).kill
   when "help"
     if argv[1]
       Exec.execve(ENV.to_hash, Grenadine::Util.self_exe, argv[1], "--help")
