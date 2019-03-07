@@ -6,7 +6,7 @@ module Grenadine
     attr_reader :process_id
 
     def valid?
-      !! pid_1_img
+      File.exist? pid_1_path
     end
 
     def images_dir_path
@@ -18,7 +18,7 @@ module Grenadine
     end
 
     def pid_1_img
-      if File.exist? pid_1_path
+      if valid?
         @img ||= File.open(pid_1_path, 'r')
       end
     end
@@ -57,17 +57,26 @@ module Grenadine
       [process_id, ctime, comm[0..9], page_size]
     end
 
-    FORMAT = "%-32s\t%-25s\t%-10s\t%-8s"
+    HDR_FORMAT = "%3s\t%-32s\t%-25s\t%-10s\t%-8s"
+    FORMAT = "%3d\t%-32s\t%-25s\t%-10s\t%-8s"
 
-    def self.list(_)
+    def self.find_index(i)
+      self.find_all[i]
+    end
+
+    def self.find_all
       images = []
       `find /var/lib/grenadine/images/* -type d`.each_line do |path|
         process_id = File.basename(path.chomp)
         images << Image.new(process_id)
       end
-      puts FORMAT % %w(IMAGE_ID CTIME COMM MEM_SIZE)
-      images.select{|i| i.valid? }.sort_by{|i| i.ctime }.reverse.each do |img|
-        puts FORMAT % img.to_fmt_arg
+      images.select{|i| i.valid? }.sort_by{|i| i.ctime }.reverse
+    end
+
+    def self.list(_)
+      puts HDR_FORMAT % %w(IDX IMAGE_ID CTIME COMM MEM_SIZE)
+      self.find_all.each_with_index do |img, i|
+        puts FORMAT % [i, *img.to_fmt_arg]
       end
     end
   end
