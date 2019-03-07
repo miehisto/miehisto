@@ -89,7 +89,7 @@ Options
       end
 
       puts "Containerized process (#{pid}:#{@argv.inspect}) is starting..."
-      ml = FiberedWorker::MainLoop.new
+      ml = FiberedWorker::MainLoop.new(interval: 5)
       ml.pid = pid
       s = ml.run
       puts "exited: #{s.inspect}"
