@@ -1,13 +1,23 @@
 module Grenadine
   class Dumper
     def initialize(argv)
-      idx = argv.index("-t") || argv.index("--target")
-      # TODO: can be auto-detected when grenadine is a service
-      if idx
-        @pid = argv[idx + 1]
+      o = GetoptLong.new(
+        ['-h', '--help', GetoptLong::NO_ARGUMENT],
+        ['-t', '--target', GetoptLong::OPTIONAL_ARGUMENT],
+      )
+      o.ARGV = argv
+      o.each do |optname, optarg| # run parse
+        case optname
+        when '-t'
+          @pid = optarg.to_i
+        when '-h'
+          help
+          exit
+        end
       end
+
       if ! @pid
-        raise "Target PID must be specified via <--target TAGRET>"
+        @pid = detect_target_pid
       end
 
       @criu = nil
@@ -15,6 +25,18 @@ module Grenadine
     end
     attr_reader :process_id
     include CRIUAble
+
+    def help
+      puts <<-HELP
+grenadine dump: Dump running service and make CRIU image into host
+
+Usage:
+  grenadine dump [OPTIONS]
+Options
+  -h, --help       Show this help
+  -t, --target PID Dump service from root pid. Default to auto-detect from grenadine SV
+      HELP
+    end
 
     def dump
       criu = make_criu_request
@@ -24,6 +46,18 @@ module Grenadine
     rescue => e
       puts "Error: #{e}"
       exit 3
+    end
+
+    def detect_target_pid
+      ppid = Pidfile.pidof(Container::GREN_SV_PIDFILE_PATH)
+      unless ppid
+        raise "Grenadine supervisor process does not exist"
+      end
+      pid = Util.ppid_to_pid(ppid)
+      unless pid
+        raise "Managed service does not exist"
+      end
+      return pid
     end
   end
 end
