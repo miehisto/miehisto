@@ -108,7 +108,7 @@ Usage:
   grenadine list [OPTIONS]
 Options
   -h, --help      Show this help
-  -l, --limit NUM Limit images tp show. Default to -l=10
+  -l, --limit NUM Limit images to show. Default to -l=10
       HELP
     end
   end
