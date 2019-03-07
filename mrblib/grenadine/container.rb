@@ -30,16 +30,33 @@ module Grenadine
           when '-e'
             k, v = optarg.split('=')
             @envvars[k] = v
-          else
-            raise "Usage: TODO"
+          when '-h'
+            help
           end
         end
         @argv = o.unparsed_argv
       else
+        help if argv.include('-h') || argv.include?('--help')
         @argv = argv
       end
     end
     attr_reader :argv, :uid, :gid, :workdir, :envvars
+
+    def help
+      puts <<-HELP
+Usage:
+  grenadin daemon [SERVICE_COMMAND]
+With options:
+  grenadin daemon [OPTIONS] -- [SERVICE_COMMAND]
+Options
+  -h, --help           Show this help
+  -u, --uid UID[:GID]  Specify service's uid (and gid). Both name and numeric ID are available
+  -g, --gid GID        Specify service's gid. Both name and numeric ID are available
+  -C, --workdir CWD    Specify service's working directory. Default to /
+  -e, --envbar FOO=xxx Set environment variables. Can be declared in many times.
+      HELP
+      exit
+    end
 
     def run
       newroot = "/var/run/grenadine/con-#{$$}"
