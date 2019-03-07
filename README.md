@@ -57,7 +57,7 @@ IDX     IMAGE_ID                                CTIME                           
 ### You can restore process from these images
 
 ```console
-$ sudo ./mruby/bin/grenadine restore 0
+$ sudo grenadine restore 0
 Restored c59a2e87cf3b0beb52544e14b93b0cf5: 10937
 $ curl localhost:9292
 Hello, Grenadine!
