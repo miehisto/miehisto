@@ -1,17 +1,52 @@
 module Grenadine
   class Restorer
     def initialize(argv)
-      idx = argv.index("-f") || argv.index("--from")
-      if idx
-        @process_id = argv[idx + 1]
+      o = GetoptLong.new(
+        ['-h', '--help', GetoptLong::NO_ARGUMENT],
+        ['-f', '--from', GetoptLong::OPTIONAL_ARGUMENT],
+        ['-D', '--debug-foreground', GetoptLong::NO_ARGUMENT],
+      )
+      o.ARGV = argv
+      o.each do |optname, optarg| # run parse
+        case optname
+        when '-f'
+          @process_id = optarg
+        when '-D'
+          @foreground = true
+        when '-h'
+          help
+          exit
+        end
       end
+
       if ! @process_id
-        raise "Dump image ID must be specified via <--from IMAGE_SHA>"
+        image = o.ARGV.empty? ?
+                  Image.find_index(0) :
+                  Image.find_index(o.ARGV[0].to_i)
+        unless image
+          help
+          raise "Invalid image index: #{o.ARGV[0]}"
+        end
+        @process_id = image.process_id
       end
-      @foreground = argv.include?("--foreground")
     end
     attr_reader :process_id
     include CRIUAble
+
+    def help
+      puts <<-HELP
+grenadine restore: restore your application from a dumped image
+  check out the image index or hash from `grenadine list'
+
+Usage:
+  grenadine restore [IMAGE_IDX]
+With options:
+  grenadine restore --from [IMAGE_SHA1]
+Options
+  -h, --help            Show this help
+  -f, --from IMAGE_SHA1 Specify image's sha1 to use for restore
+      HELP
+    end
 
     def do_restore
       ENV['GREN_PROCESS_ID'] = @process_id
