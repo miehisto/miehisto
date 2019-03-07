@@ -103,7 +103,7 @@ Options
 
       def supervise
         @pidfile = Pidfile.create Container::GREN_SV_PIDFILE_PATH
-        ml = FiberedWorker::MainLoop.new
+        ml = FiberedWorker::MainLoop.new(interval: 5)
         ml.pid = @pid
         s = ml.run
         puts "exited: #{s.inspect}"
