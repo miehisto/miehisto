@@ -13,6 +13,7 @@ MRuby::Gem::Specification.new('grenadine') do |spec|
 
   spec.add_core_dep 'mruby-array-ext'
   spec.add_core_dep 'mruby-string-ext'
+  spec.add_core_dep 'mruby-enum-ext'
   spec.add_core_dep 'mruby-io'
   spec.add_core_dep 'mruby-time'
   spec.add_core_dep 'mruby-sprintf'
@@ -25,14 +26,18 @@ MRuby::Gem::Specification.new('grenadine') do |spec|
   spec.add_dependency 'mruby-errno'
   spec.add_dependency 'mruby-sha1'
   spec.add_dependency 'mruby-iijson'
-  # spec.add_dependency 'mruby-onig-regexp'
+  spec.add_dependency 'mruby-regexp-pcre'
   spec.add_github_dep 'haconiwa/mruby-exec'
   spec.add_github_dep 'haconiwa/mruby-mount'
   spec.add_github_dep 'haconiwa/mruby-procutil'
+  spec.add_github_dep 'haconiwa/mruby-process-sys'
   spec.add_github_dep 'udzura/mruby-fibered_worker'
   spec.add_github_dep 'matsumotory/mruby-criu'
 
   spec.add_test_dependency 'mruby-bin-mruby' , :core => 'mruby-bin-mruby'
+  unless ENV['PRODUCTION_BUILD']
+    spec.add_test_dependency 'mruby-bin-mirb' , :core => 'mruby-bin-mirb'
+  end
 
   spec.build.cc.defines << %(MRB_CRIU_USE_STATIC)
 end
