@@ -1,10 +1,21 @@
 module Grenadine
   class Dumper
     def initialize(argv)
-      idx = argv.index("-t") || argv.index("--target")
-      if idx
-        @pid = argv[idx + 1]
+      o = GetoptLong.new(
+        ['-h', '--help', GetoptLong::NO_ARGUMENT],
+        ['-t', '--target', GetoptLong::OPTIONAL_ARGUMENT],
+      )
+      o.ARGV = argv
+      o.each do |optname, optarg| # run parse
+        case optname
+        when '-t'
+          @pid = optarg.to_i
+        when '-h'
+          help
+          exit
+        end
       end
+
       if ! @pid
         @pid = detect_target_pid
       end
@@ -14,6 +25,18 @@ module Grenadine
     end
     attr_reader :process_id
     include CRIUAble
+
+    def help
+      puts <<-HELP
+grenadine dump: Dump running service and make CRIU image into host
+
+Usage:
+  grenadine dump [OPTIONS]
+Options
+  -h, --help       Show this help
+  -t, --target PID Dump service from root pid. Default to auto-detect from grenadine SV
+      HELP
+    end
 
     def dump
       criu = make_criu_request

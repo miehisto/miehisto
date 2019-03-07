@@ -64,20 +64,52 @@ module Grenadine
       self.find_all[i]
     end
 
-    def self.find_all
+    def self.find_all(limit=nil)
       images = []
       `find /var/lib/grenadine/images/* -type d`.each_line do |path|
         process_id = File.basename(path.chomp)
         images << Image.new(process_id)
       end
-      images.select{|i| i.valid? }.sort_by{|i| i.ctime }.reverse
+      if limit
+        images.select{|i| i.valid? }.sort_by{|i| i.ctime }.reverse[0, limit]
+      else
+        images.select{|i| i.valid? }.sort_by{|i| i.ctime }.reverse
+      end
     end
 
-    def self.list(_)
+    def self.list(argv)
+      @limit = 10
+      o = GetoptLong.new(
+        ['-h', '--help', GetoptLong::NO_ARGUMENT],
+        ['-l', '--limit', GetoptLong::OPTIONAL_ARGUMENT],
+      )
+      o.ARGV = argv
+      o.each do |optname, optarg| # run parse
+        case optname
+        when '-l'
+          @limit = optarg.to_i
+        when '-h'
+          help_list
+          exit
+        end
+      end
+
       puts HDR_FORMAT % %w(IDX IMAGE_ID CTIME COMM MEM_SIZE)
-      self.find_all.each_with_index do |img, i|
+      self.find_all(@limit).each_with_index do |img, i|
         puts FORMAT % [i, *img.to_fmt_arg]
       end
+    end
+
+    def self.help_list
+      puts <<-HELP
+grenadine list: List available process images
+
+Usage:
+  grenadine list [OPTIONS]
+Options
+  -h, --help      Show this help
+  -l, --limit NUM Limit images tp show. Default to -l=10
+      HELP
     end
   end
 end

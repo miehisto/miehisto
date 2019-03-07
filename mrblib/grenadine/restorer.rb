@@ -40,7 +40,7 @@ grenadine restore: restore your application from a dumped image
 
 Usage:
   grenadine restore [IMAGE_IDX]
-With options:
+Usage from image hash:
   grenadine restore --from [IMAGE_SHA1]
 Options
   -h, --help            Show this help
