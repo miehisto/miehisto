@@ -36,7 +36,7 @@ module Grenadine
         end
         @argv = o.unparsed_argv
       else
-        help if argv.include('-h') || argv.include?('--help')
+        help if argv.include?('-h') || argv.include?('--help')
         @argv = argv
       end
     end
@@ -44,10 +44,12 @@ module Grenadine
 
     def help
       puts <<-HELP
+grenadine daemon: daemonize and manage your application
+
 Usage:
-  grenadin daemon [SERVICE_COMMAND]
+  grenadine daemon [SERVICE_COMMAND...]
 With options:
-  grenadin daemon [OPTIONS] -- [SERVICE_COMMAND]
+  grenadine daemon [OPTIONS] -- [SERVICE_COMMAND...]
 Options
   -h, --help           Show this help
   -u, --uid UID[:GID]  Specify service's uid (and gid). Both name and numeric ID are available
