@@ -2,12 +2,11 @@ module Grenadine
   class Dumper
     def initialize(argv)
       idx = argv.index("-t") || argv.index("--target")
-      # TODO: can be auto-detected when grenadine is a service
       if idx
         @pid = argv[idx + 1]
       end
       if ! @pid
-        raise "Target PID must be specified via <--target TAGRET>"
+        @pid = detect_target_pid
       end
 
       @criu = nil
@@ -24,6 +23,18 @@ module Grenadine
     rescue => e
       puts "Error: #{e}"
       exit 3
+    end
+
+    def detect_target_pid
+      ppid = Pidfile.pidof(Container::GREN_SV_PIDFILE_PATH)
+      unless ppid
+        raise "Grenadine supervisor process does not exist"
+      end
+      pid = Util.ppid_to_pid(ppid)
+      unless pid
+        raise "Managed service does not exist"
+      end
+      return pid
     end
   end
 end

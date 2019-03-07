@@ -1,5 +1,7 @@
 module Grenadine
   class Container
+    GREN_SV_PIDFILE_PATH = "/var/run/grenadine.pid"
+
     def initialize(argv)
       @uid = @gid = 0
       @workdir = '/'
@@ -61,6 +63,8 @@ Options
     end
 
     def run
+      @pidfile = Pidfile.create GREN_SV_PIDFILE_PATH
+
       newroot = "/var/run/grenadine/con-#{$$}"
       system "mkdir -p #{newroot}"
 
@@ -89,7 +93,9 @@ Options
       ml.pid = pid
       s = ml.run
       puts "exited: #{s.inspect}"
-      # system "rmdir -p #{newroot}"
+    ensure
+      @pidfile.remove if @pidfile
+      system "rmdir -p #{newroot}"
     end
 
     def spawn
@@ -98,6 +104,14 @@ Options
         self.run
       end
       puts "Spawned: #{pid}"
+    end
+
+    def self.run(argv)
+      new(argv).run
+    end
+
+    def self.spawn(argv)
+      new(argv).spawn
     end
 
     private
@@ -112,14 +126,6 @@ Options
     rescue => e
       puts "Error: #{e.inspect}"
       exit 127
-    end
-
-    def self.run(argv)
-      new(argv).run
-    end
-
-    def self.spawn(argv)
-      new(argv).spawn
     end
 
     def wrap_uid(rawstr)
