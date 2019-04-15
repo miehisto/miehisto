@@ -1,16 +1,20 @@
 module Grenadine
   class Kill
     def initialize(argv)
-      sig = nil
+      @sig = nil
       _sig = argv[0]
-      case _sig.chomp
+      case _sig
+      when nil
+        @sig = :TERM
       when /^\d+$/
-        sig = _sig.to_i
+        @sig = _sig.chomp.to_i
       else
-        sig = _sig.to_sym
+        @sig = _sig.chomp.to_sym
       end
+    end
 
-      Process.kill sig, Util.detect_target_pid
+    def kill
+      Process.kill @sig, Util.detect_target_pid
       puts "Kill sent."
     end
   end
