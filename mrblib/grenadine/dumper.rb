@@ -20,7 +20,7 @@ module Grenadine
       end
 
       if ! @pid
-        @pid = detect_target_pid
+        @pid = Util.detect_target_pid
       end
 
       @process_id = SHA1.sha1_hex("#{@pid}|#{Time.now.to_i}")
@@ -52,18 +52,6 @@ Options
     rescue => e
       puts "Error: #{e}"
       exit 3
-    end
-
-    def detect_target_pid
-      ppid = Pidfile.pidof(Container::GREN_SV_PIDFILE_PATH)
-      unless ppid
-        raise "Grenadine supervisor process does not exist"
-      end
-      pid = Util.ppid_to_pid(ppid)
-      unless pid
-        raise "Managed service does not exist"
-      end
-      return pid
     end
   end
 end

@@ -8,6 +8,18 @@ module Grenadine
       status.split('/')[2].to_i
     end
 
+    def self.detect_target_pid
+      ppid = Pidfile.pidof(Container::GREN_SV_PIDFILE_PATH)
+      unless ppid
+        raise "Grenadine supervisor process does not exist"
+      end
+      pid = Util.ppid_to_pid(ppid)
+      unless pid
+        raise "Managed service does not exist"
+      end
+      return pid
+    end
+
     def self.self_exe
       File.readlink "/proc/self/exe"
     end
