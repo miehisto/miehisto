@@ -24,7 +24,8 @@ def __main__(argv)
       Grenadine::Restorer.new(argv[1..-1]).restore
     end
   when "status"
-    Grenadine::Status.new(argv[1..-1]).kill
+    raise NotImplementedError, "Please wait until RubyKaigi is over!"
+    # Grenadine::Status.new(argv[1..-1]).kill
   when "kill"
     Grenadine::Kill.new(argv[1..-1]).kill
   when "help"
