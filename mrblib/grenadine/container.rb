@@ -103,6 +103,10 @@ Options
       puts "Containerized process (#{pid}:#{@argv.inspect}) is starting..."
       ml = FiberedWorker::MainLoop.new(interval: 5)
       ml.pid = pid
+      ml.register_handler(FiberedWorker::SIGINT) do |signo|
+        # Ensure kill process when supervisor is interrupted
+        Process.kill :TERM, pid
+      end
       s = ml.run
       puts "exited: #{s.inspect}"
     ensure
