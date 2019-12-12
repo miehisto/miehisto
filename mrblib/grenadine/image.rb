@@ -69,6 +69,9 @@ module Grenadine
     end
 
     def self.find_all(limit=nil)
+      if `ls #{self.images_dir} | wc -l`.to_i == 0
+        return []
+      end
       images = []
       `find #{self.images_dir}/* -type d`.each_line do |path|
         process_id = File.basename(path.chomp)
