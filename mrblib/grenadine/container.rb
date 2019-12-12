@@ -63,10 +63,17 @@ Options
     end
 
     def run
+      newroot = "/var/run/grenadine/con-#{$$}"
       @pidfile = Pidfile.create GREN_SV_PIDFILE_PATH
 
-      newroot = "/var/run/grenadine/con-#{$$}"
       system "mkdir -p #{newroot}"
+      system "mkdir -p /var/log/grenadine"
+
+      comm = File.basename(self.argv[0])
+      if self.uid > 0 || self.gid > 0
+        system "touch /var/log/grenadine/#{comm}.out && chown #{self.uid}:#{self.gid} /var/log/grenadine/#{comm}.out"
+        system "touch /var/log/grenadine/#{comm}.err && chown #{self.uid}:#{self.gid} /var/log/grenadine/#{comm}.err"
+      end
 
       this = self
       pid = Namespace.clone(Namespace::CLONE_NEWNS|Namespace::CLONE_NEWPID) do
@@ -80,7 +87,12 @@ Options
           Process::Sys.setuid(this.uid) if this.uid > 0
           Process::Sys.setgid(this.gid) if this.gid > 0
 
-          Procutil.daemon_fd_reopen # again, TODO: make optional
+
+          in_io  = File.open("/dev/null", "r")
+          out_io = File.open("/var/log/grenadine/#{comm}.out", "a")
+          err_io = File.open("/var/log/grenadine/#{comm}.err", "a")
+
+          Procutil.fd_reopen3(in_io.fileno, out_io.fileno, err_io.fileno)
           Exec.execve ENV.to_hash.merge(this.envvars), *this.argv
         rescue => e
           puts "Error: #{e.inspect}"
@@ -95,7 +107,7 @@ Options
       puts "exited: #{s.inspect}"
     ensure
       @pidfile.remove if @pidfile
-      system "rmdir -p #{newroot}"
+      system "rmdir #{newroot}"
     end
 
     def spawn
