@@ -142,7 +142,13 @@ Options
       Mount.bind_mount hostroot, newroot
       # TODO: we cannt dump /run when bind-mounted
       # TODO: automate exporting all of these subfolders as --external
-      %w(/dev /dev/pts /dev/shm /dev/mqueue /tmp).each do |path|
+      bind_dirs = %w(/dev /dev/pts /dev/shm /dev/mqueue /tmp /sys /sys/fs/cgroup)
+      `cat /proc/mounts | grep '^cgroup '`.each_line do |ln|
+        if ln.split[2] == "cgroup"
+          bind_dirs << ln.split[1]
+        end
+      end
+      bind_dirs.each do |path|
         Mount.bind_mount path, "#{newroot}#{path}"
       end
     rescue => e
