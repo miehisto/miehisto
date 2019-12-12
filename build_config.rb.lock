@@ -80,3 +80,8 @@ builds:
       branch: master
       commit: 76aca2714e381bede4453cc534024809691042cb
       version: 0.0.0
+    https://github.com/matsumotory/mruby-criu.git:
+      url: https://github.com/matsumotory/mruby-criu.git
+      branch: master
+      commit: d6660ece5148ba9759339b6f61797f7ad12fea73
+      version: 0.0.0

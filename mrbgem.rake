@@ -33,7 +33,7 @@ MRuby::Gem::Specification.new('grenadine') do |spec|
   spec.add_github_dep 'haconiwa/mruby-process-sys'
   spec.add_github_dep 'udzura/mruby-fibered_worker'
   spec.add_github_dep 'udzura/mruby-lockfile'
-  spec.add_github_dep 'udzura/mruby-criu' # TODO: back to matsumotory
+  spec.add_github_dep 'matsumotory/mruby-criu'
 
   spec.add_test_dependency 'mruby-bin-mruby' , :core => 'mruby-bin-mruby'
   unless ENV['PRODUCTION_BUILD']
