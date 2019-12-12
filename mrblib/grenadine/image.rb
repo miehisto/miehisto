@@ -10,7 +10,11 @@ module Grenadine
     end
 
     def images_dir_path
-      "/var/lib/grenadine/images/#{process_id}"
+      "#{self.class.images_dir}/#{process_id}"
+    end
+
+    def self.images_dir
+      ENV['GREN_IMAGES_DIR'] || "/var/lib/grenadine/images"
     end
 
     def pid_1_path
@@ -66,7 +70,7 @@ module Grenadine
 
     def self.find_all(limit=nil)
       images = []
-      `find /var/lib/grenadine/images/* -type d`.each_line do |path|
+      `find #{self.images_dir}/* -type d`.each_line do |path|
         process_id = File.basename(path.chomp)
         images << Image.new(process_id)
       end
