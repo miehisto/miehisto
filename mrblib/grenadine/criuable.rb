@@ -39,12 +39,20 @@ module Grenadine
       b.empty? ? "/usr/local/sbin/criu" : b
     end
 
+    def images_dir_root
+      ENV['GREN_IMAGES_DIR'] || "/var/lib/grenadine/images"
+    end
+
     def images_dir
-      "/var/lib/grenadine/images/#{process_id}"
+      "#{images_dir_root}/#{process_id}"
+    end
+
+    def run_root_of_root
+      ENV['GREN_RESTORE_ROOT'] || "/var/run/grenadine/restored"
     end
 
     def run_root
-      "/var/run/grenadine/restored/#{process_id}"
+      "#{run_root_of_root}/#{process_id}"
     end
 
     def service_address
