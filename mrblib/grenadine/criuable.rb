@@ -63,9 +63,23 @@ module Grenadine
       ENV['CRIU_LOG_FILE'] || "-"
     end
 
+    def external_bind_targets
+      @external_bind_targets ||= begin
+                                   bind_dirs = %w(/dev /dev/pts /dev/shm /dev/mqueue /tmp /sys /sys/fs/cgroup)
+                                   `cat /proc/mounts | grep '^cgroup '`.each_line do |ln|
+                                     if ln.split[2] == "cgroup"
+                                       bind_dirs << ln.split[1]
+                                     end
+                                   end
+                                   bind_dirs
+                                 end
+    end
+
     def external_mount_points
-      %w(/dev /dev/pts /dev/shm /dev/mqueue /tmp).map do |path|
-        [path, "#{path.tr('/', '_')}-#{process_id}"]
+      @external_mount_points ||= external_bind_targets.map do |path|
+        parts = path.split('/')
+        prefix = parts.size == 1 ? parts.join : [parts[0], parts[-1]].join('__')
+        [path, "#{prefix}-#{process_id}"]
       end
     end
 
