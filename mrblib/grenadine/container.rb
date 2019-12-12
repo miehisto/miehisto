@@ -132,8 +132,14 @@ Options
 
     private
     def make_isolated_root(newroot)
-      Mount.make_rprivate "/"
-      Mount.bind_mount "/", newroot
+      hostroot = if `mount | grep ' on / '`.include?("squashfs") # for snap
+                   "/var/lib/snapd/hostfs"
+                 else
+                   "/"
+                 end
+
+      Mount.make_rprivate hostroot
+      Mount.bind_mount hostroot, newroot
       # TODO: we cannt dump /run when bind-mounted
       # TODO: automate exporting all of these subfolders as --external
       %w(/dev /dev/pts /dev/shm /dev/mqueue /tmp).each do |path|
