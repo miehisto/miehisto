@@ -1,0 +1,15 @@
+Source: grenadine
+Section: devel
+Priority: optional
+Maintainer: Uchio Kondo <udzura@udzura.jp>
+Build-Depends: debhelper (>=9), rake, git, bison, libprotobuf-dev, libprotobuf-c0-dev, protobuf-c-compiler, protobuf-compiler, pkg-config, libnl-3-dev, libnet1-dev, libcap-dev
+Standards-Version: 3.9.5
+Homepage: https://github.com/udzura/grenadine
+Vcs-Git: https://github.com/udzura/grenadine.git
+
+Package: grenadine
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, libprotobuf-c1, criu (>=3)
+Description: A checkpoint manager for application servers
+ This use CRIU internally
+ 
