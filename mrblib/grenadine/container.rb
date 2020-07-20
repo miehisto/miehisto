@@ -141,7 +141,7 @@ Options
       Mount.make_rprivate hostroot
       Mount.bind_mount hostroot, newroot
       # TODO: we cannt dump /run when bind-mounted
-      # TODO: automate exporting all of these subfolders as --external
+      # TODO: duplicated. Extract it from CRIUAble module...
       bind_dirs = %w(/dev /dev/pts /dev/shm /dev/mqueue /tmp /sys /sys/fs/cgroup)
       `cat /proc/mounts | grep '^cgroup '`.each_line do |ln|
         if ln.split[2] == "cgroup"
