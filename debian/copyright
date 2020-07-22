@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: grenadine
-Source: https://github.com/udzura/grenadine
+Upstream-Name: miehisto
+Source: https://github.com/udzura/miehisto
 
 Files: *
 Copyright: 2019 Uchio Kondo
@@ -31,4 +31,4 @@ License: GPL-3+
  * libargtable: MITL
  * mruby: MITL
  * libuv: Node's license
- About others, please see https://github.com/haconiwa/haconiwa/blob/master/README.md#license
+ About others, please see https://github.com/udzura/miehisto/blob/master/README.md#license

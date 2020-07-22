@@ -1,5 +1,5 @@
 #!/bin/sh
-# postinst script for haconiwa
+# postinst script for miehisto
 #
 # see: dh_installdeb(1)
 
@@ -20,7 +20,7 @@ set -e
 
 case "$1" in
     configure)
-        echo 'grenadine installed!'
+        echo 'miehisto installed!'
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
