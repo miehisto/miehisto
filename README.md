@@ -1,6 +1,8 @@
-# Grenadine
+# Miehistö
 
-A checkpoint manager for application servers
+Miehistö (formerly grenadine) is a checkpoint manager for application servers, using CRIU(Checkpoint and Restore In Userspace) internally.
+
+"Miehistö" is the Suomi(Finnish) word equivalent to CREW in English :)
 
 ## Install
 
@@ -16,13 +18,17 @@ TODO...
 ### Build from source
 
 ```bash
-git clone https://github.com/udzura/grenadine.git; cd grenadine
+git clone https://github.com/udzura/miehitsto.git; cd miehisto
 rake
-sudo mv ./mruby/bin/grenadine /usr/local/bin
+sudo mv ./mruby/bin/... /usr/local/bin
 ```
 
 * Both libcriu and libprce will be statically linked.
 * Also see [mruby itself's prerequisites](https://github.com/mruby/mruby/blob/master/doc/guides/compile.md#prerequisites)
+
+----
+
+Instructions below are for former versions. Rewrite is required.
 
 ## Usage
 
