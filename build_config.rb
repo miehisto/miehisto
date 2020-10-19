@@ -14,5 +14,7 @@ MRuby::Build.new do |conf|
   conf.enable_debug
   conf.enable_test
 
+  conf.cc.flags << '-std=gnu99 -Wno-declaration-after-statement'
+
   gem_config(conf)
 end
