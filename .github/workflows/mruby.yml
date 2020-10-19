@@ -28,6 +28,6 @@ jobs:
     - name: Run Bundle
       run: bundle install
     - name: Add Packages
-      run: sudo bundle exec rake packages
+      run: sudo apt -y install pkg-config python-ipaddress libbsd-dev libnftables-dev libcap-dev libnl-3-dev libnet-dev libaio-dev libprotobuf-dev libprotobuf-c-dev protobuf-c-compiler protobuf-compiler python-protobuf
     - name: Run Build
       run: bundle exec rake
