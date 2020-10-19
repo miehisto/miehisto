@@ -33,7 +33,7 @@ MRuby::Gem::Specification.new('miehisto') do |spec|
   spec.add_github_dep 'haconiwa/mruby-process-sys'
   spec.add_github_dep 'udzura/mruby-fibered_worker'
   spec.add_github_dep 'udzura/mruby-lockfile'
-  spec.add_dependency 'mruby-criu', path: '/usr/local/ghq/github.com/udzura/mruby-criu'
+  spec.add_github_dep 'udzura/mruby-criu'
 
   spec.add_test_dependency 'mruby-bin-mruby' , :core => 'mruby-bin-mruby'
   unless ENV['PRODUCTION_BUILD']
