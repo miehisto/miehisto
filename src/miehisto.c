@@ -24,9 +24,11 @@
 #include <mruby/hash.h>
 #include <mruby/error.h>
 
+#include "miehisto.h"
+
 #define DONE mrb_gc_arena_restore(mrb, 0);
 
-int pivot_root(const char *new_root, const char *put_old){
+static int pivot_root(const char *new_root, const char *put_old){
   return (int)syscall(SYS_pivot_root, new_root, put_old);
 }
 
@@ -159,10 +161,10 @@ static mrb_value mrb_gren_get_page_size(mrb_state *mrb, mrb_value self)
   return mrb_fixnum_value((mrb_int)page_size);
 }
 
-void mrb_grenadine_gem_init(mrb_state *mrb)
+void mrb_miehisto_gem_init(mrb_state *mrb)
 {
   struct RClass *util;
-  util = mrb_define_module(mrb, "GrenadineUtil");
+  util = mrb_define_module(mrb, "MiehistoUtil");
   mrb_define_class_method(mrb, util, "pivot_root_to", mrb_pivot_root_to, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, util, "get_ctime", mrb_gren_get_ctime, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, util, "get_page_size", mrb_gren_get_page_size, MRB_ARGS_REQ(1));
@@ -170,6 +172,6 @@ void mrb_grenadine_gem_init(mrb_state *mrb)
   DONE;
 }
 
-void mrb_grenadine_gem_final(mrb_state *mrb)
+void mrb_miehisto_gem_final(mrb_state *mrb)
 {
 }

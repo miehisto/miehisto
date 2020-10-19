@@ -1,7 +1,7 @@
-MRuby::Gem::Specification.new('grenadine') do |spec|
+MRuby::Gem::Specification.new('miehisto') do |spec|
   spec.license = 'MIT'
   spec.authors = 'Uchio Kondo'
-  spec.bins = ["grenadine"]
+  spec.bins = %w(miehistod mhctl runmh)
 
   def spec.add_core_dep(name)
     self.add_dependency name, core: name
@@ -33,7 +33,7 @@ MRuby::Gem::Specification.new('grenadine') do |spec|
   spec.add_github_dep 'haconiwa/mruby-process-sys'
   spec.add_github_dep 'udzura/mruby-fibered_worker'
   spec.add_github_dep 'udzura/mruby-lockfile'
-  spec.add_github_dep 'matsumotory/mruby-criu'
+  spec.add_dependency 'mruby-criu', path: '/usr/local/ghq/github.com/udzura/mruby-criu'
 
   spec.add_test_dependency 'mruby-bin-mruby' , :core => 'mruby-bin-mruby'
   unless ENV['PRODUCTION_BUILD']

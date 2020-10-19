@@ -1,5 +1,24 @@
 MRUBY_CONFIG=File.expand_path(ENV["MRUBY_CONFIG"] || "build_config.rb")
-MRUBY_VERSION=ENV["MRUBY_VERSION"] || "2.1.0"
+MRUBY_VERSION=ENV["MRUBY_VERSION"] || "2.1.2"
+
+desc "setup packages"
+task :packages do
+  packages = %w(
+    pkg-config python-ipaddress libbsd-dev
+    libnftables-dev libcap-dev libnl-3-dev
+    libnet-dev libaio-dev
+    libprotobuf-dev libprotobuf-c-dev protobuf-c-compiler
+    protobuf-compiler python-protobuf
+  )
+  sh "apt -y install #{packages.join(' ')}"
+end
+
+desc "install criu via PPA"
+task :installcriu do
+  sh "add-apt-repository ppa:criu/ppa"
+  sh "apt update"
+  sh "apt install criu"
+end
 
 file :mruby do
   sh "git clone --depth=1 git://github.com/mruby/mruby.git"

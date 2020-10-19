@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include <mruby.h>
+#include <mruby/variable.h>
 #include <mruby/array.h>
 #include <mruby/error.h>
 
@@ -15,13 +16,15 @@ int main(int argc, char *argv[])
   int i;
   int return_value;
 
-  for (i = 0; i < argc; i++) {
+  mrb_gv_set(mrb, mrb_intern_lit(mrb, "$0"), mrb_str_new_cstr(mrb, argv[0]));
+  for (i = 1; i < argc; i++) {
     mrb_ary_push(mrb, ARGV, mrb_str_new_cstr(mrb, argv[i]));
   }
   mrb_define_global_const(mrb, "ARGV", ARGV);
 
-  // call __main__(ARGV)
-  mrb_funcall(mrb, mrb_top_self(mrb), "__main__", 1, ARGV);
+  struct RClass *mh = mrb_module_get(mrb, "Miehisto");
+  struct RClass *c = mrb_class_get_under(mrb, mh, "Daemon");
+  mrb_funcall(mrb, mrb_obj_value(c), "__main__", 1, ARGV);
 
   return_value = EXIT_SUCCESS;
 
