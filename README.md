@@ -1,5 +1,7 @@
 # Miehistö
 
+![mruby](https://github.com/udzura/miehisto/workflows/Ruby/badge.svg)
+
 Miehistö (formerly grenadine) is a checkpoint manager for application servers, using CRIU(Checkpoint and Restore In Userspace) internally.
 
 "Miehistö" is the Suomi(Finnish) word equivalent to CREW in English :)
