@@ -15,9 +15,7 @@ on:
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
@@ -27,5 +25,9 @@ jobs:
       uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
       with:
         ruby-version: 2.6
-    - name: Run build
-      run: rake
+    - name: Run Bundle
+      run: bundle install
+    - name: Add Packages
+      run: sudo bundle exec rake packages
+    - name: Run Build
+      run: bundle exec rake
