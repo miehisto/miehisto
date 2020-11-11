@@ -77,6 +77,6 @@ builds:
       version: 0.0.0
     https://github.com/udzura/mruby-criu.git:
       url: https://github.com/udzura/mruby-criu.git
-      branch: master
+      branch: HEAD
       commit: 10422bddc844ff44b7faae3145ba8d202cf2996d
       version: 0.0.0

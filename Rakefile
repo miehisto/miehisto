@@ -15,9 +15,14 @@ end
 
 desc "install criu via PPA"
 task :installcriu do
-  sh "add-apt-repository ppa:criu/ppa"
-  sh "apt update"
-  sh "apt install criu"
+  sh "add-apt-repository -y ppa:criu/ppa"
+  sh "apt -y update"
+  sh "apt -y install criu"
+end
+
+desc "run criu service"
+task :startcriu do
+  sh "criu service --address /var/run/criu_service.socket 1>/var/log/miehisto-criu.log 2>&1 &"
 end
 
 file :mruby do
