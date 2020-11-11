@@ -47,6 +47,18 @@ module Miehisto
         end
       end
 
+      first_fail = true
+      mainloop.on_worker_exit do |status, rest|
+        if first_fail
+          puts "Wow, some worker(s) are failed accidentally: #{status.inspect}"
+          puts "Kill all of workers and exit"
+          first_fail = false
+          mainloop.pids.each do |pid|
+            Process.kill :TERM, pid
+          end
+        end
+      end
+
       p mainloop.run
       puts "Miehistöt ovat viimeistelee töitä..."
     end
