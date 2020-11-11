@@ -16,6 +16,7 @@
 #include <fcntl.h>
 #include <syslog.h>
 #include <string.h>
+#include <signal.h>
 #include <errno.h>
 #include <time.h>
 
@@ -161,6 +162,12 @@ static mrb_value mrb_gren_get_page_size(mrb_state *mrb, mrb_value self)
   return mrb_fixnum_value((mrb_int)page_size);
 }
 
+static mrb_value mrb_gren_sigpipe_ign(mrb_state *mrb, mrb_value self)
+{
+  signal(SIGPIPE, SIG_IGN);
+  return mrb_true_value();
+}
+
 void mrb_miehisto_gem_init(mrb_state *mrb)
 {
   struct RClass *util;
@@ -168,6 +175,7 @@ void mrb_miehisto_gem_init(mrb_state *mrb)
   mrb_define_class_method(mrb, util, "pivot_root_to", mrb_pivot_root_to, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, util, "get_ctime", mrb_gren_get_ctime, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, util, "get_page_size", mrb_gren_get_page_size, MRB_ARGS_REQ(1));
+  mrb_define_class_method(mrb, util, "sigpipe_ign!", mrb_gren_sigpipe_ign, MRB_ARGS_NONE());
 
   DONE;
 }

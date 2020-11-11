@@ -27,6 +27,8 @@ MRuby::Gem::Specification.new('miehisto') do |spec|
   spec.add_dependency 'mruby-sha1'
   spec.add_dependency 'mruby-iijson'
   spec.add_dependency 'mruby-regexp-pcre'
+  spec.add_dependency 'mruby-httprequest'
+  spec.add_dependency 'mruby-simplehttpserver'
   spec.add_github_dep 'haconiwa/mruby-exec'
   spec.add_github_dep 'haconiwa/mruby-mount'
   spec.add_github_dep 'haconiwa/mruby-procutil'
