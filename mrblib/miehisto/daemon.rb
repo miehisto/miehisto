@@ -40,14 +40,15 @@ module Miehisto
       mainloop = FiberedWorker::MainLoop.new
       mainloop.pids = [@image_worker[:pid], @service_worker[:pid], @http_worker[:pid]]
 
+      first_fail = true
       mainloop.register_handler(SIGINT) do |nr|
+        first_fail = false
         puts "Accept SIGINT... exitting"
         mainloop.pids.each do |pid|
           Process.kill :TERM, pid
         end
       end
 
-      first_fail = true
       mainloop.on_worker_exit do |status, rest|
         if first_fail
           puts "Wow, some worker(s) are failed accidentally: #{status.inspect}"
@@ -71,30 +72,7 @@ module Miehisto
     end
 
     def app
-      Proc.new do |env|
-        headers = {}
-        headers['Content-type'] =  'text/html; charset=utf-8'
-        code = 200
-        body = ""
-
-        begin
-          path = env['PATH_INFO']
-          if path == "/"
-            body << "mruby httpd!\nrequest: #{env.inspect}"
-          elsif path == "/hello"
-            @writers[:service].print("Hola!\n")
-
-            body << "mruby httpd!\nrequest: #{env.inspect}"
-          else
-            code = 404
-            body << "Path #{path.inspect} is not registered\n"
-          end
-        rescue => err
-          code = 503
-          body << "mruby error: #{err.inspect}\n"
-        end
-        [code, headers, [body]]
-      end
+      HTTPApi.new(writers: @writers)
     end
 
     def run

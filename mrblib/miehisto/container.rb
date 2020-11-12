@@ -79,8 +79,7 @@ module Miehisto
       Mount.make_rprivate hostroot
       Mount.bind_mount hostroot, newroot
       # TODO: we cannt dump /run when bind-mounted
-      # TODO: duplicated. Extract it from CRIUAble module...
-      bind_dirs = %w(/dev /dev/pts /dev/shm /dev/mqueue /tmp /sys /sys/fs/cgroup)
+      bind_dirs = Consts::BIND_DIRS
       `cat /proc/mounts | grep '^cgroup '`.each_line do |ln|
         if ln.split[2] == "cgroup"
           bind_dirs << ln.split[1]
