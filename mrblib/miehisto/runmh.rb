@@ -6,7 +6,18 @@ module Miehisto
     class << self
       def __main__(argv)
         options = {}
-        if argv.include? '--'
+        if argv[0] == '--restore'
+          @restorer = Restorer.new(object_id: argv[1])
+          @restorer.run
+          exit
+        elsif argv[0] == '--restored'
+          @restorer = Restorer.new(object_id: ENV['MIEHISTO_OBJECT_ID'])
+          @restorer.supervise
+          exit
+        elsif argv[0] == '--exec-cmd'
+          @restorer = Restorer.OnExecCmd.rexec(argv[1])
+          exit
+        elsif argv.include? '--'
           options[:envvars] = {}
           o = GetoptLong.new(
             ['-h', '--help', GetoptLong::NO_ARGUMENT],
@@ -42,6 +53,7 @@ module Miehisto
           help if argv.include?('-h') || argv.include?('--help')
           options[:argv] = argv
         end
+
         @container = Container.new(**options)
         @container.run
       end

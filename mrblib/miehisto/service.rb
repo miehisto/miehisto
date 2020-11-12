@@ -20,5 +20,10 @@ module Miehisto
 
       @pid = 0 # TODO: get the pid! dummy
     end
+
+    def restore(object_id:)
+      @object_id = object_id
+      @writer.write("RESTORE\t#{@object_id}\t\t")
+    end
   end
 end

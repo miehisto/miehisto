@@ -161,20 +161,35 @@ module Miehisto
 
           puts "received: #{buf}"
           data = buf.split("\t")
-          # only supports inst == "ADD"
-          objid = data[1]
-          args = data[2..-1]
-          pid = fork do
-            envvars = {
-              'MIEHISTO_OBJECT_ID' => objid
-            }
-            argv = [RUNMH_PATH, "--"] + args
-            puts argv
-            Exec.execve ENV.to_hash.merge(envvars), *argv
+          inst = data[0]
+          if inst == "ADD"
+            objid = data[1]
+            args = data[2..-1]
+            pid = fork do
+              envvars = {
+                'MIEHISTO_OBJECT_ID' => objid
+              }
+              argv = [RUNMH_PATH, "--"] + args
+              puts argv
+              Exec.execve ENV.to_hash.merge(envvars), *argv
+            end
+            mainloop.pids << pid
+            puts "Add service: PID=#{pid}"
+            buf = ''
+          elsif inst == "RESTORE"
+            objid = data[1]
+            pid = fork do
+              envvars = {
+                'MIEHISTO_OBJECT_ID' => objid
+              }
+              argv = [RUNMH_PATH, "--restore", objid]
+              puts argv
+              Exec.execve ENV.to_hash.merge(envvars), *argv
+            end
+            mainloop.pids << pid
+            puts "Add service: PID=#{pid}(restored)"
+            buf = ''
           end
-          mainloop.pids << pid
-          puts "Add service: PID=#{pid}"
-          buf = ''
         rescue => e
           puts e.inspect
           puts "Skip..."

@@ -66,6 +66,20 @@ module Miehisto
             code = 404
             body << {}.to_json
           end
+        when "/v1/services/restore"
+          params = json_body(env)
+          if params
+            #r = Restorer.new(**params)
+            s = Service.new(writer: @writers[:service], service_pid: @service_pid)
+            s.restore(**params)
+
+            body << {
+              pid: s.pid,
+              args: s.args,
+              restored: true,
+              object_id: s.object_id
+            }.to_json
+          end
         else
           code = 404
           body << {message: "Path #{path.inspect} is not registered"}.to_json
