@@ -24,6 +24,9 @@ module Miehisto
     def restore(object_id:)
       @object_id = object_id
       @writer.write("RESTORE\t#{@object_id}\t\t")
+      Process.kill :USR1, @service_pid
+
+      @pid = 0 # TODO: get the pid! dummy
     end
   end
 end

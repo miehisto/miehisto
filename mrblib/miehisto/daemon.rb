@@ -151,7 +151,8 @@ module Miehisto
       spawner = fork { loop { sleep 65535 } } # the dummy busyloop
       mainloop.pids = [spawner]
       buf = ''
-      mainloop.register_handler(:SIGUSR1) do |signo|
+      mainloop.register_handler(:SIGUSR1, false) do |signo|
+        puts "get SIGUSR1...?"
         begin
           loop do
             d = @reader.sysread(8192)

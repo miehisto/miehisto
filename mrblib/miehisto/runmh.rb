@@ -15,7 +15,7 @@ module Miehisto
           @restorer.supervise
           exit
         elsif argv[0] == '--exec-cmd'
-          @restorer = Restorer.OnExecCmd.rexec(argv[1])
+          @restorer = Restorer::OnExecCmd.rexec(argv[1])
           exit
         elsif argv.include? '--'
           options[:envvars] = {}

@@ -15,15 +15,15 @@ module Miehisto
       cmd = ops.make_criu_command_obj
       cmd.options.concat ["--pidfile", pidfile_path]
       cmd.exec_cmd = [Restorer.self_exe, "--exec-cmd", pidfile_path]
-      system "mkdir -p #{ops.run_root}"
+      system "mkdir -p #{ops.run_root(@object_id)}"
       Namespace.unshare(Namespace::CLONE_NEWNS)
       Mount.make_rprivate "/"
-      Mount.bind_mount "/", ops.run_root
+      Mount.bind_mount "/", ops.run_root(@object_id)
       puts "Command: #{cmd.to_execve_arg.inspect}"
       Exec.execve(ENV.to_hash, *cmd.to_execve_arg)
     rescue => e
-      Mount.umount ops.run_root
-      system "rmdir #{ops.run_root}"
+      Mount.umount ops.run_root(@object_id)
+      system "rmdir #{ops.run_root(@object_id)}"
       raise e
     end
 
@@ -41,8 +41,10 @@ module Miehisto
       puts "exited: #{s.inspect}"
     ensure
       @pidfile.remove if @pidfile
-      Mount.umount ops.run_root
-      system "rmdir #{ops.run_root}"
+      if @object_id
+        Mount.umount ops.run_root(@object_id)
+        system "rmdir #{ops.run_root(@object_id)}"
+      end
     end
 
     def pidfile_path

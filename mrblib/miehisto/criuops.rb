@@ -129,7 +129,7 @@ module Miehisto
         c.externals << "mnt[#{mp[1]}]:#{mp[0]}"
       end
 
-      c.root = run_root
+      c.root = run_root(@process_id)
       # TODO: setting exec_cmd
       # TODO: cleanup run_root on container finished - this is exec_cmd's due
       return c
