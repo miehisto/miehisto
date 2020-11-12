@@ -34,7 +34,7 @@ module Miehisto
         image: @image_worker[:writer],
         service: @service_worker[:writer]
       }
-      @http_worker = HTTPWorker.reexec(writers: writers, port: @port)
+      @http_worker = HTTPWorker.reexec(writers: writers, port: @port, service_pid: @service_worker[:pid])
       writers.values.each{|w| w.close }
 
       mainloop = FiberedWorker::MainLoop.new
@@ -67,12 +67,13 @@ module Miehisto
 
   # HTTPWorker: This handles API requests
   class HTTPWorker
-    def initialize(writers:)
+    def initialize(writers:, service_pid:)
       @writers = writers
+      @service_pid = service_pid
     end
 
     def app
-      HTTPApi.new(writers: @writers)
+      HTTPApi.new(writers: @writers, service_pid: @service_pid)
     end
 
     def run
@@ -89,7 +90,7 @@ module Miehisto
       server.run
     end
 
-    def self.reexec(writers:, port:)
+    def self.reexec(writers:, port:, service_pid:)
       pid = Process.fork do
         envv = {
           'MIEHISTOD_WORKER_MODE' => 'http-worker',
@@ -101,7 +102,7 @@ module Miehisto
         #   '/proc/self/exe'
         # )
         ENV['MIEHISTOD_PORT'] = port.to_s
-        HTTPWorker.new(writers: writers).run
+        HTTPWorker.new(writers: writers, service_pid: service_pid).run
       end
       {pid: pid}
     end
@@ -144,9 +145,53 @@ module Miehisto
       @reader = reader
     end
 
+    RUNMH_PATH = "/usr/local/ghq/github.com/udzura/miehisto/mruby/bin/runmh"
     def run
-      # TODO: fill in logicks
-      loop { p @reader.sysread(204) }
+      mainloop = FiberedWorker::MainLoop.new(interval: 0)
+      spawner = fork { loop { sleep 65535 } } # the dummy busyloop
+      mainloop.pids = [spawner]
+      buf = ''
+      mainloop.register_handler(:SIGUSR1) do |signo|
+        begin
+          loop do
+            d = @reader.sysread(8192)
+            buf << d
+            break if buf.end_with?("\t\t")
+          end
+
+          puts "received: #{buf}"
+          data = buf.split("\t")
+          # only supports inst == "ADD"
+          objid = data[1]
+          args = data[2..-1]
+          pid = fork do
+            envvars = {
+              'MIEHISTO_OBJECT_ID' => objid
+            }
+            argv = [RUNMH_PATH, "--"] + args
+            puts argv
+            Exec.execve ENV.to_hash.merge(envvars), *argv
+          end
+          mainloop.pids << pid
+          puts "Add service: PID=#{pid}"
+          buf = ''
+        rescue => e
+          puts e.inspect
+          puts "Skip..."
+        end
+      end
+      mainloop.register_handler(:SIGTERM) do |signo|
+        puts "Accept #{signo}... exitting"
+        mainloop.pids.each do |pid|
+          Process.kill :TERM, pid
+        end
+        # TODO: force to kill frozen processes
+      end
+      mainloop.on_worker_exit do |status, rest|
+        puts "Termed service! #{status} rest: #{rest}"
+      end
+      s = mainloop.run
+      puts "Service Worker finished: #{s}"
     end
 
     def self.reexec(fd: nil)

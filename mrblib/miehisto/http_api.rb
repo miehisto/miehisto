@@ -22,13 +22,14 @@ end
 module Miehisto
   # Daemon: miehistod command entrypoint
   class HTTPApi
-    def initialize(writers:)
+    def initialize(writers:, service_pid:)
       @writers = writers
+      @service_pid = service_pid
     end
 
     def call(env)
       headers = {}
-      headers['Content-type'] =  'application/json; charset=utf-8'
+      headers['Content-type'] = 'application/json; charset=utf-8'
       code = 200
       body = ""
 
@@ -38,18 +39,24 @@ module Miehisto
         when "/"
           body << {message: "This is our CREW!"}.to_json
         when "/v1/services/index"
-          raise NotImplementedError
+          services = Service.list
+          body << services.to_json
         when "/v1/services/create"
-          @writers[:service].print("Hola!\n")
+          params = json_body(env)
+          s = Service.new(writer: @writers[:service], service_pid: @service_pid)
+          s.create(**params)
 
-          body << "mruby httpd!\nrequest: #{env.inspect}"
+          body << {
+            pid: s.pid,
+            args: s.args,
+            object_id: s.object_id
+          }.to_json
         when "/v1/services/delete"
           raise NotImplementedError
         when "/v1/services/dumps/create"
           params = json_body(env)
           if params
             d = Dumper.new(**params)
-            p d
             d.dump
             body << {
               pid: d.pid,
