@@ -148,7 +148,7 @@ module Miehisto
     RUNMH_PATH = "/usr/local/ghq/github.com/udzura/miehisto/mruby/bin/runmh"
     def run
       mainloop = FiberedWorker::MainLoop.new(interval: 0)
-      spawner = fork { loop { sleep 65535 } } # the dummy busyloop
+      spawner = fork { Exec.execve ENV.to_hash, "/bin/sleep", "inf" } # the dummy busyloop
       mainloop.pids = [spawner]
       buf = ''
       mainloop.register_handler(:SIGUSR1, false) do |signo|

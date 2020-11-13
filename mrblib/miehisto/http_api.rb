@@ -39,18 +39,14 @@ module Miehisto
         when "/"
           body << {message: "This is our CREW!"}.to_json
         when "/v1/services/index"
-          services = Service.list
-          body << services.to_json
+          services = Service.list(service_pid: @service_pid)
+          body << services.map(&:to_params).to_json
         when "/v1/services/create"
           params = json_body(env)
           s = Service.new(writer: @writers[:service], service_pid: @service_pid)
           s.create(**params)
 
-          body << {
-            pid: s.pid,
-            args: s.args,
-            object_id: s.object_id
-          }.to_json
+          body << s.to_params.to_json
         when "/v1/services/delete"
           raise NotImplementedError
         when "/v1/services/dumps/create"
