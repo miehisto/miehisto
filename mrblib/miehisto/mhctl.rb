@@ -55,11 +55,14 @@ module Miehisto
         case comm
         when "list"
           o = JSON.parse `curl -s http://127.0.0.1:14444/v1/images/index`
-          fmt = "%-32s %-12s %-8s %24s"
+          fmt = "%-32s %-12s %-10s %-28s"
           puts fmt % %w(OBJECT_ID COMM PAGE_SIZE CTIME)
           puts o.map { |i|
             fmt %
-              [i["object_id"], i["comm"] ,i["page_size"], i["ctime"]]
+              [i["object_id"],
+               i["comm"],
+               i["page_size"],
+               i["ctime"]]
           }.join("\n")
         end
       else
