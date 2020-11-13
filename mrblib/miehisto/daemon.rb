@@ -145,7 +145,10 @@ module Miehisto
       @reader = reader
     end
 
-    RUNMH_PATH = "/usr/local/ghq/github.com/udzura/miehisto/mruby/bin/runmh"
+    def self.runmh_path
+      ENV['RUNMH_PATH'] || `which runmh`.chomp
+    end
+
     def run
       mainloop = FiberedWorker::MainLoop.new(interval: 0)
       spawner = fork { Exec.execve ENV.to_hash, "/bin/sleep", "inf" } # the dummy busyloop
@@ -170,7 +173,7 @@ module Miehisto
               envvars = {
                 'MIEHISTO_OBJECT_ID' => objid
               }
-              argv = [RUNMH_PATH, "--"] + args
+              argv = [ServiceWorker.runmh_path, "--"] + args
               puts argv
               Exec.execve ENV.to_hash.merge(envvars), *argv
             end
@@ -183,7 +186,7 @@ module Miehisto
               envvars = {
                 'MIEHISTO_OBJECT_ID' => objid
               }
-              argv = [RUNMH_PATH, "--restore", objid]
+              argv = [ServiceWorker.runmh_path, "--restore", objid]
               puts argv
               Exec.execve ENV.to_hash.merge(envvars), *argv
             end
