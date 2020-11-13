@@ -18,9 +18,37 @@ module Miehisto
               [i["object_id"], i["pid"].to_s ,i["ppid"].to_s, i["args"].join(" ")]
           }.join("\n")
         when "create"
+          argv.shift if argv[0] == '--'
+          o = JSON.parse `curl -s -d '{"args": #{argv.inspect}}' http://127.0.0.1:14444/v1/services/create`
+          if o["message"]
+            puts "Error: #{o["message"]}"
+          else
+            puts o["object_id"]
+          end
         when "dump"
+          pid = if argv.shift == '-t'
+                  argv[0]
+                else
+                  raise ArgumentError, "invalid: " + ARGV.inspect
+                end
+          o = JSON.parse `curl -s -d '{"pid": #{pid}}' http://127.0.0.1:14444/v1/services/dumps/create`
+          if o["message"]
+            puts "Error: #{o["message"]}"
+          else
+            puts o["images_dir"]
+          end
         when "restore"
-
+          object_id = if argv.shift == '--from'
+                        argv[0]
+                      else
+                        raise ArgumentError, "invalid: " + ARGV.inspect
+                      end
+          o = JSON.parse `curl -s -d '{"object_id": "#{object_id}"}' http://127.0.0.1:14444/v1/services/restore`
+          if o["message"]
+            puts "Error: #{o["message"]}"
+          else
+            puts o["object_id"]
+          end
         end
       when "image", "i"
         comm = argv.shift
