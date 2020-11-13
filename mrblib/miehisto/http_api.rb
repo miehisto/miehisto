@@ -76,6 +76,9 @@ module Miehisto
               object_id: s.object_id
             }.to_json
           end
+        when "/v1/images/index"
+          images = Image.find_all
+          body << images.map(&:to_params).to_json
         else
           code = 404
           body << {message: "Path #{path.inspect} is not registered"}.to_json

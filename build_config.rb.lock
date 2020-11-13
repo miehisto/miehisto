@@ -120,3 +120,8 @@ builds:
       branch: HEAD
       commit: 185455010e82fdc491ded1c705b2c0521bb266ba
       version: 0.0.0
+    https://github.com/monochromegane/mruby-time-strftime.git:
+      url: https://github.com/monochromegane/mruby-time-strftime.git
+      branch: master
+      commit: ea8a77504f43fe9f985529b987f3d88bf2a2291a
+      version: 0.0.0
