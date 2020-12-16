@@ -15,16 +15,16 @@ module Miehisto
     attr_reader :argv, :uid, :gid, :workdir, :envvars
 
     def run
-      newroot = "/var/run/grenadine/con-#{$$}"
+      newroot = "/var/run/miehisto/con-#{$$}"
       @pidfile = Pidfile.create(pidfile_path)
 
       system "mkdir -p #{newroot}"
-      system "mkdir -p /var/log/grenadine"
+      system "mkdir -p /var/log/miehisto"
 
       comm = File.basename(self.argv[0])
       if self.uid > 0 || self.gid > 0
-        system "touch /var/log/grenadine/#{comm}.out && chown #{self.uid}:#{self.gid} /var/log/grenadine/#{comm}.out"
-        system "touch /var/log/grenadine/#{comm}.err && chown #{self.uid}:#{self.gid} /var/log/grenadine/#{comm}.err"
+        system "touch /var/log/miehisto/#{comm}.out && chown #{self.uid}:#{self.gid} /var/log/miehisto/#{comm}.out"
+        system "touch /var/log/miehisto/#{comm}.err && chown #{self.uid}:#{self.gid} /var/log/miehisto/#{comm}.err"
       end
       this = self
       pid = Namespace.clone(Namespace::CLONE_NEWNS|Namespace::CLONE_NEWPID) do
@@ -39,8 +39,8 @@ module Miehisto
 
 
           in_io  = File.open("/dev/null", "r")
-          out_io = File.open("/var/log/grenadine/#{comm}.out", "a")
-          err_io = File.open("/var/log/grenadine/#{comm}.err", "a")
+          out_io = File.open("/var/log/miehisto/#{comm}.out", "a")
+          err_io = File.open("/var/log/miehisto/#{comm}.err", "a")
 
           Procutil.fd_reopen3(in_io.fileno, out_io.fileno, err_io.fileno)
           Exec.execve ENV.to_hash.merge(this.envvars), *this.argv
