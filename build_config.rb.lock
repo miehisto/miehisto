@@ -23,7 +23,7 @@ builds:
     https://github.com/haconiwa/mruby-linux-namespace.git:
       url: https://github.com/haconiwa/mruby-linux-namespace.git
       branch: HEAD
-      commit: 85f21fd3910f81194c1e3e5d23a857a8b5a09dc6
+      commit: c1cc9c091ad58750d22625741160c4e3a73048b3
       version: 0.0.0
     https://github.com/iij/mruby-errno.git:
       url: https://github.com/iij/mruby-errno.git
@@ -45,6 +45,21 @@ builds:
       branch: HEAD
       commit: a961225c0953dd2bd987111f0836821573616de2
       version: 0.0.0
+    https://github.com/matsumotory/mruby-simplehttp.git:
+      url: https://github.com/matsumotory/mruby-simplehttp.git
+      branch: HEAD
+      commit: fc2ecd21eedcafd9bb7cad6a014d4f33c87a6196
+      version: 0.0.1
+    https://github.com/monochromegane/mruby-time-strftime.git:
+      url: https://github.com/monochromegane/mruby-time-strftime.git
+      branch: HEAD
+      commit: ea8a77504f43fe9f985529b987f3d88bf2a2291a
+      version: 0.0.0
+    https://github.com/udzura/mruby-simplehttpserver.git:
+      url: https://github.com/udzura/mruby-simplehttpserver.git
+      branch: HEAD
+      commit: 72e5dcf365319e25b405d14d08081b6500d109b1
+      version: 1.0.0
     https://github.com/haconiwa/mruby-exec.git:
       url: https://github.com/haconiwa/mruby-exec.git
       branch: HEAD
@@ -80,48 +95,28 @@ builds:
       branch: HEAD
       commit: 10422bddc844ff44b7faae3145ba8d202cf2996d
       version: 0.0.0
-    https://github.com/matsumotory/mruby-httprequest.git:
-      url: https://github.com/matsumotory/mruby-httprequest.git
+    https://github.com/luisbebop/mruby-polarssl.git:
+      url: https://github.com/luisbebop/mruby-polarssl.git
       branch: HEAD
-      commit: 628d43dca8b9231b75cb966a471f171e735bb907
-      version: 0.0.1
-    https://github.com/matsumotory/mruby-simplehttp.git:
-      url: https://github.com/matsumotory/mruby-simplehttp.git
-      branch: HEAD
-      commit: fc2ecd21eedcafd9bb7cad6a014d4f33c87a6196
-      version: 0.0.1
+      commit: 37b14f7b7378bc798eb980d8649f3fcfb1a1defe
+      version: 2.1.2
     https://github.com/mattn/mruby-http.git:
       url: https://github.com/mattn/mruby-http.git
       branch: HEAD
       commit: dfabda4dc0fa8581a8760097c0cb79d4395199a5
-      version: 0.0.0
-    https://github.com/luisbebop/mruby-polarssl.git:
-      url: https://github.com/luisbebop/mruby-polarssl.git
-      branch: HEAD
-      commit: 2971e0bbf024251776ae16d77c2432a4d4d133f8
-      version: 2.1.2
-    https://github.com/matsumotory/mruby-simplehttpserver.git:
-      url: https://github.com/matsumotory/mruby-simplehttpserver.git
-      branch: HEAD
-      commit: 5a097ff55d7b320cb41ba74d71793d70b5d2404c
-      version: 1.0.0
-    https://github.com/iij/mruby-mtest.git:
-      url: https://github.com/iij/mruby-mtest.git
-      branch: HEAD
-      commit: 34a477d249b0d21671058be33aa75d04c3e981ba
       version: 0.0.0
     https://github.com/katzer/mruby-shelf.git:
       url: https://github.com/katzer/mruby-shelf.git
       branch: HEAD
       commit: fe72d925b71576cfd05aed35829759c67988a068
       version: 0.0.0
+    https://github.com/iij/mruby-mtest.git:
+      url: https://github.com/iij/mruby-mtest.git
+      branch: HEAD
+      commit: 34a477d249b0d21671058be33aa75d04c3e981ba
+      version: 0.0.0
     https://github.com/katzer/mruby-r3.git:
       url: https://github.com/katzer/mruby-r3.git
       branch: HEAD
       commit: 185455010e82fdc491ded1c705b2c0521bb266ba
-      version: 0.0.0
-    https://github.com/monochromegane/mruby-time-strftime.git:
-      url: https://github.com/monochromegane/mruby-time-strftime.git
-      branch: HEAD
-      commit: ea8a77504f43fe9f985529b987f3d88bf2a2291a
       version: 0.0.0

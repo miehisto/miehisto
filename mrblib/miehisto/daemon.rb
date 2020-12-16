@@ -77,17 +77,30 @@ module Miehisto
     end
 
     def run
-      port = ENV['MIEHISTOD_PORT']
-      bind = ENV['MIEHISTOD_ADDR'] || '127.0.0.1'
+      @path = ENV['MIEHISTOD_SOCKET_PATH'] || '/var/run/miehistod.sock'
+      @port = ENV['MIEHISTOD_PORT']
+      @bind = ENV['MIEHISTOD_ADDR']
       MiehistoUtil.sigpipe_ign!
-      puts "[#{$$}] Starting server http://#{bind}:#{port}/"
-      server = SimpleHttpServer.new(
-        server_ip: bind,
-        port: port.to_i,
-        debug: true,
-        app: app,
-      )
-      server.run
+      gen_server.run
+    end
+
+    def gen_server
+      if @port && @bind
+        puts "[#{$$}] Starting server http://#{@bind}:#{@port}/"
+        SimpleHttpServer.new(
+          server_ip: @bind,
+          port: @port.to_i,
+          debug: true,
+          app: app,
+        )
+      else
+        puts "[#{$$}] Starting server unix:/#{@path}"
+        SimpleHttpServer.new(
+          path: @path,
+          debug: true,
+          app: app,
+        )
+      end
     end
 
     def self.reexec(writers:, port:, service_pid:)
