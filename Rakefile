@@ -1,5 +1,5 @@
 MRUBY_CONFIG=File.expand_path(ENV["MRUBY_CONFIG"] || "build_config.rb")
-MRUBY_VERSION=ENV["MRUBY_VERSION"] || "2.1.2"
+MRUBY_VERSION=ENV["MRUBY_VERSION"] || "3.0.0"
 
 desc "setup packages"
 task :packages do
